@@ -11,7 +11,7 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
       - run: |
           # Build netboot (initrd)
-          nix-build '<nixpkgs/nixos>' -A config.system.build.netbootRamdisk \
+          nix-build '<nixpkgs/nixos>' -A config.system.build.netbootIpxeScript \
             -I nixos-config=./netboot-custom.nix \
             --arg configuration ./netboot-custom.nix
           mkdir netboot
