@@ -1,0 +1,18 @@
+name: Build NixOS Netboot
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - run: |
+          nix-build '<nixpkgs/nixos>' -A config.system.build.netbootRamdisk \
+            -I nixos-config=./netboot-custom.nix \
+            --arg configuration ./netboot-custom.nix
+          cp -rL result netboot
+      - uses: actions/upload-artifact@v4
+        with:
+          name: netboot
+          path: netboot/
