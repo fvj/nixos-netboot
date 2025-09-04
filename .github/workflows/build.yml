@@ -10,10 +10,20 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - run: |
+          # Build netboot (initrd)
           nix-build '<nixpkgs/nixos>' -A config.system.build.netbootRamdisk \
             -I nixos-config=./netboot-custom.nix \
             --arg configuration ./netboot-custom.nix
-          cp -rL result netboot
+          mkdir netboot
+          cp -L result/* netboot/
+          
+          # Build kernel separately with different output link
+          nix-build '<nixpkgs/nixos>' -A config.system.build.kernel \
+            -I nixos-config=./netboot-custom.nix \
+            --arg configuration ./netboot-custom.nix \
+            -o kernel-result
+          cp -L kernel-result/bzImage netboot/bzImage || \
+          cp -L kernel-result netboot/bzImage
       - uses: actions/upload-artifact@v4
         with:
           name: netboot
