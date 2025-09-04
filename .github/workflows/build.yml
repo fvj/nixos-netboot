@@ -7,6 +7,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
       - run: |
           nix-build '<nixpkgs/nixos>' -A config.system.build.netbootRamdisk \
             -I nixos-config=./netboot-custom.nix \
